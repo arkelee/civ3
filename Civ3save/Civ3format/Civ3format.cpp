@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
 	fp_out = fopen(argv[2], "w");
 	if (!fp_out)
 		goto err;
-	fp_log = fopen("log.txt", "w");
+	fp_log = fopen("log.txt.c", "w");
 	if (!fp_log)
 		goto err;
 

@@ -15,6 +15,7 @@ enum token_line {
 	ITEM_ITEM_ITEM_HEADER,
 	ITEM_ITEM_ITEM_FIELD,
 	COMMENT,
+	OTHERS,
 };
 enum errorcode {
 	SYNTAX = 0,

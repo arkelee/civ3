@@ -11,20 +11,20 @@ enum token_line looknext;
 char section[5];
 
 int	bytes = 0;
-char type[10];
-char field[128];
+char type[1024];
+char field[1024];
 
 char g_buf[1024];
-char dbg_buf1[128];
-char dbg_buf2[128];
-char dbg_buf3[128];
+char dbg_buf1[1024];
+char dbg_buf2[1024];
+char dbg_buf3[1024];
 
-//#define PROFILE
+#define PROFILE
 #ifdef PROFILE
 #define profile() \
 	do { \
 		static int count; \
-		debug("#%03d ", count++); \
+		debug("[%s#%d]", __FUNCTION__, count++); \
 	} while(0)
 #else
 #define profile()
@@ -32,14 +32,15 @@ char dbg_buf3[128];
 ///////////////////////////////////////////////////////////
 void report_error(enum errorcode code)
 {
-	debug("errorcode = %d\n", (int)code);
+	printf("errorcode = %d\n", (int)code);
+	printf("%s\n", linebuf);
     g_errorcode = code;
 }
 
 void inline get_line()
 {
 	begin_line = ftell(fp_src);
-	fgets(linebuf, 511, fp_src);
+	fgets(linebuf, 1023, fp_src);
 }
 void inline retrect_line()
 {
@@ -51,8 +52,9 @@ enum token_line parse_section_header()
 	wrap_regcomp("TOP ([[:graph:]]+) SECTION", REG_EXTENDED);
 	if (REG_OK == wrap_regexec(linebuf, 0)) {
 		wrap_regmatch("%s", section);
-		debug("section %s\n", section);
+		debug("%s", section);
 		profile();
+		debug("\n");
 		return SECTION_HEADER;
 	}
 
@@ -63,8 +65,9 @@ enum token_line parse_section_name()
 	wrap_regcomp("^  ([[:digit:]]+)[[:space:]]+([[:lower:]]+)[[:space:]]+\"([[:graph:]]+)\"", REG_EXTENDED);
 	if (REG_OK == wrap_regexec(linebuf, 0)) {
 		wrap_regmatch("%d%s%s", &bytes, type, section);
-		debug("\t%d\t%s\t%s\n", bytes, type, section);
+		debug("\t%d\t%s\t%s", bytes, type, section);
 		profile();
+		debug("\n");
 		return SECTION_NAME;
 	}
 	return UNKNOWN_TOKEN;
@@ -74,8 +77,9 @@ enum token_line parse_section_number()
 	wrap_regcomp("^  ([[:digit:]]+)[[:space:]]+([[:lower:]]+)[[:space:]]+number of (([[:lower:]]| )+)", REG_EXTENDED);
 	if (REG_OK == wrap_regexec(linebuf, 0)) {
 		wrap_regmatch("%d%s%s", &bytes, type, g_buf);
-		debug("\t%d\t%s\tnumber of %s\n", bytes, type, g_buf);
+		debug("\t%d\t%s\tnumber of %s", bytes, type, g_buf);
 		profile();
+		debug("\n");
 		return SECTION_NUMBER;
 	}
 	return UNKNOWN_TOKEN;
@@ -85,19 +89,26 @@ enum token_line parse_item_header()
 	wrap_regcomp("^  For each (([[:lower:]]| )+):", REG_EXTENDED);
 	if (REG_OK == wrap_regexec(linebuf, 0)) {
 		wrap_regmatch("%s", g_buf);
-		debug("\tFor each %s #%d\n", g_buf);
+		debug("\tFor each %s", g_buf);
 		profile();
+		debug("\n");
 		return ITEM_HEADER;
 	}
 	return UNKNOWN_TOKEN;
 }
 enum token_line parse_item_field()
 {
-	wrap_regcomp("^    ([[:digit:]]+)[[:space:]]+([[:lower:]]+)[[:space:]]+(([[:lower:]]| )+)", REG_EXTENDED);
+	wrap_regcomp("^    ([[:digit:]]+)[[:space:]]+([[:lower:]]+)[[:space:]]+(([[:alnum:]]| )+)", REG_EXTENDED);
 	if (REG_OK == wrap_regexec(linebuf, 0)) {
 		wrap_regmatch("%d%s%s", &bytes, type, field);
-		debug("\t\t%d\t%s\t%s #%d\n", bytes, type, field);
+		debug("\t\t%d\t%s\t%s", bytes, type, field);
 		profile();
+		debug("\n");
+
+//		if (!strncmp(field, "number of", 9)) {
+//			return ITEM_ITEM_HEADER;
+//		}
+
 		return ITEM_FIELD;
 	}
 	return UNKNOWN_TOKEN;
@@ -109,41 +120,85 @@ enum token_line parse_item_field_binary()
 }
 enum token_line parse_item_field_binary_header()
 {
+	wrap_regcomp("00000000", REG_EXTENDED);
+	if (REG_OK == wrap_regexec(linebuf, 0)) {
+//		wrap_regmatch("%s", g_buf);
+		debug("\t\t\tBINARY_HEADER:");
+		profile();
+		debug("\n");
+		return ITEM_FIELD_BINARY_HEADER;
+	}
 	return UNKNOWN_TOKEN;
-	return ITEM_FIELD_BINARY_HEADER;
 }
 enum token_line parse_item_field_binary_bitfield()
 {
+//	wrap_regcomp("[[:blank:]]+([[:graph:]]+)[[:blank:]]+[.1]{8}", REG_EXTENDED);
+	wrap_regcomp("(([[:graph:]]| )+)\t+([.1]{8})", REG_EXTENDED);
+	if (REG_OK == wrap_regexec(linebuf, 0)) {
+		wrap_regmatch("%s%s%s", g_buf, dbg_buf1, field);
+		debug("\t\t\t%s\t%s", field, g_buf);
+		profile();
+		debug("\n");
+		return ITEM_FIELD_BINARY_BITFIELD;
+	}
 	return UNKNOWN_TOKEN;
-	return ITEM_FIELD_BINARY_BITFIELD;
 }
 enum token_line parse_item_item_header()
 {
+	wrap_regcomp("^    For each (([[:lower:]]| )+):", REG_EXTENDED);
+	if (REG_OK == wrap_regexec(linebuf, 0)) {
+		wrap_regmatch("%s", g_buf);
+		debug("\t\tFor each %s", g_buf);
+		profile();
+		debug("\n");
+		return ITEM_ITEM_HEADER;
+	}
 	return UNKNOWN_TOKEN;
-	return ITEM_ITEM_HEADER;
 }
 enum token_line parse_item_item_field()
 {
+	wrap_regcomp("^      ([[:digit:]]+)[[:space:]]+([[:lower:]]+)[[:space:]]+(([[:alnum:]]| )+)", REG_EXTENDED);
+	if (REG_OK == wrap_regexec(linebuf, 0)) {
+		wrap_regmatch("%d%s%s", &bytes, type, field);
+		debug("\t\t\t%d\t%s\t%s", bytes, type, field);
+		profile();
+		debug("\n");
+		return ITEM_ITEM_FIELD;
+	}
 	return UNKNOWN_TOKEN;
-	return ITEM_ITEM_FIELD;
 }
 enum token_line parse_item_item_item_header()
 {
+	wrap_regcomp("^      For each (([[:lower:]]| )+):", REG_EXTENDED);
+	if (REG_OK == wrap_regexec(linebuf, 0)) {
+		wrap_regmatch("%s", g_buf);
+		debug("\t\t\tFor each %s", g_buf);
+		profile();
+		debug("\n");
+		return ITEM_ITEM_ITEM_HEADER;
+	}
 	return UNKNOWN_TOKEN;
-	return ITEM_ITEM_ITEM_HEADER;
 }
 enum token_line parse_item_item_item_field()
 {
+	wrap_regcomp("^        ([[:digit:]]+)[[:space:]]+([[:lower:]]+)[[:space:]]+(([[:alnum:]]| )+)", REG_EXTENDED);
+	if (REG_OK == wrap_regexec(linebuf, 0)) {
+		wrap_regmatch("%d%s%s", &bytes, type, field);
+		debug("\t\t\t\t%d\t%s\t%s", bytes, type, field);
+		profile();
+		debug("\n");
+		return ITEM_ITEM_ITEM_FIELD;
+	}
 	return UNKNOWN_TOKEN;
-	return ITEM_ITEM_ITEM_FIELD;
 }
 enum token_line parse_comment()
 {
 	wrap_regcomp("^((//.*|[[:space:]]*)*)\n", REG_EXTENDED);
 	if (REG_OK == wrap_regexec(linebuf, 0)) {
 		wrap_regmatch("%s", g_buf);
-		debug("//COMMENT:%s\n", g_buf);
+		debug("//%s", g_buf);
 		profile();
+		debug("\n");
 		return COMMENT;
 	}
 
@@ -151,18 +206,20 @@ enum token_line parse_comment()
 }
 enum token_line parse_unknown()
 {
-	wrap_regcomp("^((//.*|[[:space:]]*)*)\n", REG_EXTENDED);
+	wrap_regcomp("^(([^/]{2}.*|[[:space:]]*)*)\n", REG_EXTENDED);
 	if (REG_OK == wrap_regexec(linebuf, 0)) {
 		wrap_regmatch("%s", g_buf);
-		debug("//COMMENT:%s\n", g_buf);
+		debug("//%s", g_buf);
 		profile();
-		return COMMENT;
+		debug("\n");
+		return OTHERS;
 	}
 
 	return UNKNOWN_TOKEN;
 }
 parse_line_func_t *parse_line_funcs[] = {
 	parse_item_field,
+	parse_comment,
 	parse_section_header,
 	parse_section_name,
 	parse_section_number,
@@ -174,7 +231,6 @@ parse_line_func_t *parse_line_funcs[] = {
 	parse_item_item_field,
 	parse_item_item_item_header,
 	parse_item_item_item_field,
-	parse_comment,
 	parse_unknown,
 	NULL,
 };
@@ -194,6 +250,8 @@ _start:
 			return looknext;
 		}
 	}
+	
+	debug("//UNKNOWN:%s\n", linebuf);
 	return (looknext = UNKNOWN_TOKEN);
 }
 
@@ -205,11 +263,59 @@ void match_line(enum token_line t)
         report_error(SYNTAX);
 }
 
+int parse_item_item_item()
+{
+	match_line(ITEM_ITEM_ITEM_HEADER);
+	match_line(ITEM_ITEM_ITEM_FIELD);
+	while(1) {
+		switch (looknext) {
+		case ITEM_ITEM_ITEM_FIELD:
+			match_line(ITEM_ITEM_ITEM_FIELD);
+			break;
+		default:
+			goto _end;
+		}
+	}
+_end:
+	return 0;
+}
+
+int parse_item_item()
+{
+	match_line(ITEM_ITEM_HEADER);
+	match_line(ITEM_ITEM_FIELD);
+	while(1) {
+		switch (looknext) {
+		case ITEM_ITEM_FIELD:
+			match_line(ITEM_ITEM_FIELD);
+			break;
+		case ITEM_ITEM_ITEM_HEADER:
+			parse_item_item_item();
+		default:
+			goto _end;
+		}
+	}
+_end:
+	return 0;
+}
+
 int parse_item()
 {
 	match_line(ITEM_HEADER);
-
 	match_line(ITEM_FIELD);
+	while(1) {
+		switch (looknext) {
+		case ITEM_FIELD:
+			match_line(ITEM_FIELD);
+			break;
+		case ITEM_ITEM_HEADER:
+			parse_item_item();
+			break;
+		default:
+			goto _end;
+		}
+	}
+_end:
 	return 0;
 }
 

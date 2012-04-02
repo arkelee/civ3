@@ -1,9 +1,9 @@
-{start file}
-bytes	type		value
--------------------------------------------------------
-TOP "BIC file indicator"
-  4	char		"BIC " (Civ3) or "BICX" (PTW/C3C)
-
+//{start file}
+//bytes	type		value
+//-------------------------------------------------------
+//TOP "BIC file indicator"
+//  4	char		"BIC " (Civ3) or "BICX" (PTW/C3C)
+//
 TOP VER# SECTION (BIC Header)
   4	char		"VER#"
   4	long		number of headers (1)
@@ -128,7 +128,7 @@ TOP BLDG SECTION (Improvements and Wonders)
 			allows diplomatic victory		..1.....
     4	long		number of armies required
     4	long		flavors (binary)
-    4	long		???
+    4	long		unknown
     4	long		Unit produced (PRTO ref)
     4	long		Unit frequency
 
@@ -199,7 +199,7 @@ TOP ERAS SECTION (Eras)
     32	string		researcher #4
     32	string		researcher #5
     4	long		number of used researcher names
-    4	long		??? (=1)
+    4	long		unknown (=1)
 
 TOP ESPN SECTION (Diplomats and Spies)
   4	char		"ESPN"
@@ -252,7 +252,7 @@ TOP GOVT SECTION (Governments)
     4	long		default type
     4	long		transition type
     4	long		requires maintenance
-    4	long		??? (0 for Rebublic/Democracy, 1 for rest)
+    4	long		unknown (0 for Rebublic/Democracy, 1 for rest)
     4	long		standard tile penalty
     4	long		standard trade bonus
     64	string		government name
@@ -272,7 +272,7 @@ TOP GOVT SECTION (Governments)
     4	long		number of governments
 
     For each government type:
-    (performance of above goverment type versus each of the others)
+//    (performance of above goverment type versus each of the others)
       4	long		can bribe this government type? (0 = no, 1 = yes)
       4	long		bribery modifier vs.
       4	long		resistance modifier vs.
@@ -281,13 +281,12 @@ TOP GOVT SECTION (Governments)
     4	long		assimilation chance
     4	long		draft limit
     4	long		military police	limit
-    4	long		# ruler title pairs used (max is 4)
+    4	long		ruler title pairs used (max is 4)
     4	long		prerequisite technology index #
     4	long		science rate cap (10 = 100% of gold can go to science)
     4	long		worker rate
-    4	long		??? (-1 for Despotism/Communism, 0 for Anarchy/Monarchy, 
-			1 for Republic/Democracy)
-    4	long		??? (1 for Republic/Democracy, 0 for the rest)
+    4	long		unknown (-1 for Despotism/Communism, 0 for Anarchy/Monarchy, 1 for Republic/Democracy)
+    4	long		unknown (1 for Republic/Democracy, 0 for the rest)
     4	long		free units
     4	long		all units free (-1 = yes, 0 = no)
     4	long		free units per town
@@ -321,8 +320,8 @@ TOP RULE SECTION (General Settings)
     4	long		shield cost per gold
     4	long		fortress defensive bonus
     4	long		citizens affected by each happy face
-    4	long		??? (50)
-    4	long		??? (2)
+    4	long		unknown (50)
+    4	long		unknown (2)
     4	long		forest value in shields
     4	long		shield value in gold
     4	long		citizen value in shields
@@ -335,7 +334,7 @@ TOP RULE SECTION (General Settings)
     4	long		chance to intercept enemy air missions
     4	long		chance to intercept enemy stealth missions
     4	long		starting treasury
-    4	long		??? (16)
+    4	long		unknown (16)
     4	long		food consumption/citizen
     4	long		river defensive bonus
     4	long		turn penalty for each hurry sacrifice
@@ -350,7 +349,7 @@ TOP RULE SECTION (General Settings)
     4	long		metropolis defense bonus
     4	long		maximum level 1 city size
     4	long		maximum level 2 city size
-    4	long		??? (1000)
+    4	long		unknown (1000)
     4	long		fortifications defensive bonus
     4	long		number of culture levels
 
@@ -559,7 +558,7 @@ TOP PRTO SECTION (Units)
     			meaning			duped from	00000000 
     			sentry			std orders	.......1
  			bombard 		special actions	......1. 
- 			build colony OR
+// 			build colony OR
  			build road 		worker actions	.....1..
  			build road		worker actions	....1...
  			build railroad	worker actions		...1....
@@ -572,31 +571,31 @@ TOP PRTO SECTION (Units)
 			automate		worker actions	.....1..
 			automate		worker actions	....1...
 			bombing			air missions	...1....
-			precision bombing	air missions	..1....
+			precision bombing	air missions	..1.....
 			automate		worker actions	.1......
-			goto			std orders OR	
+//			goto			std orders OR	
 			rebase			air missions	1.......
-    2   short		??? (1)
+    2   short		unknown (1)
     4   long		bombard effects
 
     For each terrain: (PTW: 12 C3C: 14)   
       1 byte		ignore movment cost
     4   long		require support
-    4   long		???
-    4   long		???
-    4   long		???
-    4   long		???
+    4   long		unknown
+    4   long		unknown
+    4   long		unknown
+    4   long		unknown
     4   long		enslave results
-    4   long		???
+    4   long		unknown
     4   long		number of stealth targets
 
     For each stealth target:
       4 long		stealth target (PRTO ref)
-    4   long		???
-    4   long		???
+    4   long		unknown
+    4   long		unknown
     1   byte		create craters
     4   float		worker strength
-    4   long		???
+    4   long		unknown
     4   long		air defense
     
 
@@ -681,10 +680,10 @@ TOP RACE SECTION (Civilizations)
     4	long		build often (binary, same as above)
     4	long		plurality
     4	long		king unit (PRTO ref)
-	4	long		flavors (binary)
-	4	long		???
-	4	long		diplomacy text index
-	4	long		number of scientific leaders
+    4	long		flavors (binary)
+    4	long		unknown
+    4	long		diplomacy text index
+    4	long		number of scientific leaders
 
     For each scientific leader:
       32 string		scientific leader name
@@ -750,10 +749,10 @@ TOP TERR SECTION (Terrain)
   4	long		number of terrains
 
   For each terrain:
-	4	long		length of terrain data (113)
-	4	long		number of possible resources
-	*	byte[]		possible resources (binary)
-			1 for the corresponding indexes of the resources
+    4	long		length of terrain data (113)
+    4	long		number of possible resources
+    1	byte		possible resources (binary)
+//			1 for the corresponding indexes of the resources
     32	string		terrain name
     32	string		civilopedia entry
     4	long		irrigation (food) bonus
@@ -774,7 +773,7 @@ TOP TERR SECTION (Terrain)
     1	byte		allow forts
     1	byte		allow outposts
     1	byte		allow radar towers
-    4	long		???
+    4	long		unknown
     1	byte		landmark enabled
     4	long		landmark food
     4	long		landmark shields
@@ -786,7 +785,7 @@ TOP TERR SECTION (Terrain)
     4	long		landmark defense bonus
     32	string		landmark name
     32	string		landmark civilopedia entry
-    4	long		???
+    4	long		unknown
     4	long		terrain flags
     4	long		disease strength
     
@@ -798,7 +797,7 @@ TOP WSIZ SECTION (World Sizes)
     4	long		length of world size data (80)
     4	long		optimal number of cities (corruption)
     4	long		tech rate
-    24	string		??? (empty)
+    24	string		unknown (empty)
     32	string		world size name
     4	long		height
     4	long		distance between civs
@@ -813,12 +812,12 @@ TOP FLAV SECTION (Flavors)
     4	long		number of flavors
     
     For each flavor:
-       4   long		???
-       256 string		flavor name
-       4 long		number of flavors
+      4   long		unknown
+      256 string		flavor name
+      4 long		number of flavors
        
-       For each flavor:
-          4 long		relation
+      For each flavor:
+        4 long		relation
 
 
 TOP WCHR SECTION
@@ -857,10 +856,10 @@ TOP WMAP SECTION
     4	long		height
     4	long		distance between civs
     4	long		number of civs
-    4	long		???
-    4	long		??? (0)
+    4	long		unknown
+    4	long		unknown (0)
     4	long		width
-    4	long		??? (-1)
+    4	long		unknown (-1)
     124 	long		unknown
     4	long		map seed
     4	long		flags (binary):
@@ -886,10 +885,10 @@ TOP TILE SECTION
     4	long		resource
     1	byte		image
     1	byte		file:
-    				0 = xtgc.pcx, 1 = xgpc.pcx, 2 = xdgc.pcx,
-				3 = xdpc.pcx, 4 = xdgp.pcx, 5 = xggc.pcx,
-				6 = wcso.pcx, 7 = wsss.pcx, 8 = wooo.pcx
-    2	short		??? (0)
+//    				0 = xtgc.pcx, 1 = xgpc.pcx, 2 = xdgc.pcx,
+//				3 = xdpc.pcx, 4 = xdgp.pcx, 5 = xggc.pcx,
+//				6 = wcso.pcx, 7 = wsss.pcx, 8 = wooo.pcx
+    2	short		unknown (0)
     1	byte		overlays (binary):
 					00000000
 			road		.......1
@@ -905,10 +904,10 @@ TOP TILE SECTION
     1	nibble		real terrain (PTW, 0 in C3C)
     1	byte		bonuses (binary):
 					00000000
-			bonus grassland .......1
-			player start    ....1...
-			snow-capped mts ...1....
-			pine forest     ..1.....
+			bonus grassland	.......1
+			player start	....1...
+			snow-capped mts	...1....
+			pine forest	..1.....
     1	byte		river crossing data (binarry):
 					00000000
 			crossing N	.......1
@@ -923,17 +922,17 @@ TOP TILE SECTION
     2	short		colony (CLNY ref)
     2	short		city (CITY ref)
     2	short		continent (CONT ref)
-    1	byte		???
+    1	byte		unknown
     2	short		victory point location (0 = VPL, -1 = non VPL)
     4	long		ruin
     4	long		C3C overlays (binary)
-	1	byte		???
-	1	nibble		C3C base terrain
+    1	byte		unknown
+    1	nibble		C3C base terrain
     1	nibble		C3C real terrain
-    2	short		???
+    2	short		unknown
     2	short		fog of war
-	4	long		C3C bonuses (binary)
-	2	short		???    
+    4	long		C3C bonuses (binary)
+    2	short		unknown    
 
 TOP CONT SECTION
   4	char		"CONT"
@@ -1050,13 +1049,13 @@ TOP GAME SECTION
     4	long		start year (negative if "BC")
     4	long		minute time limit
     4	long		turn time limit
-    28	long[7]		number of turns per timescalepart
-    28	long[7]		nuber of timeunits per turn
+    28	long		number of turns per timescalepart
+    28	long		nuber of timeunits per turn
     5200	string		scenario search folders
-    (4	long		map visible, BIX >= 11.19 ONLY, not BIQ (major=12))
+    4	long		map visible, BIX >= 11.19 ONLY, not BIQ (major=12)
 
     For each playable civ:
-	   4 long		alliance (0-4, 0 = none)
+      4 long		alliance (0-4, 0 = none)
     4	long		victory point limit
     4	long		city elimination count
     4	long		one city cultutre win
@@ -1069,8 +1068,8 @@ TOP GAME SECTION
     4	long		city conquest population 
     4	long		victory point scoring
     4	long		capturing special unit
-    4	long		???
-    1	byte		???
+    4	long		unknown
+    1	byte		unknown
     256	string		alliance name #0 (blank/unallied)
     256	string		alliance name #1
     256	string		alliance name #2
@@ -1078,11 +1077,11 @@ TOP GAME SECTION
     256	string		alliance name #4
 
     For each alliance: (0 to 4)
-       4 long		war with alliance #0 ("unallied")
-       4 long		war with alliance #1
-       4 long		war with alliance #2
-       4 long		war with alliance #3
-       4 long		war with alliance #4
+      4 long		war with alliance #0 ("unallied")
+      4 long		war with alliance #1
+      4 long		war with alliance #2
+      4 long		war with alliance #3
+      4 long		war with alliance #4
     4	long		alliance victory type
     260	string		plauge name
     1	byte		permit plauges
@@ -1092,14 +1091,14 @@ TOP GAME SECTION
     4	long 		plauge strength
     4	long 		plauge grace period
     4	long 		plauge max occurance
-    4	long		???
-    260	string		??? ("Unknown")
+    4	long		unknown
+    260	string		unknown ("Unknown")
     4	long		respawn flag units
     1	byte		capture any flag
     4	long		gold for capture
     1	byte		map visible
     1	byte		retain culture
-    4	long		???
+    4	long		unknown
     4	long		eruption period
     4	long		mp basetime
     4	long		mp city time
@@ -1116,8 +1115,8 @@ TOP LEAD SECTION
     4	long		custom civ data (1=use, 0=don't use)
     4	long 		human player (1=yes, 0=no)
     32	string		leader name
-    4	long 		???
-    4	long 		???
+    4	long 		unknown
+    4	long 		unknown
     4	long 		number of different start unit
     For each type of start units:
       4 long		number of start units of the type
@@ -1133,6 +1132,6 @@ TOP LEAD SECTION
     4	long 		civ (-2=random, -3=any)
     4	long 		color
     4	long 		skip first turn
-	4	long 		???
-	1	byte 		start embassies
-{end file}
+    4	long 		unknown
+    1	byte 		start embassies
+//{end file}
