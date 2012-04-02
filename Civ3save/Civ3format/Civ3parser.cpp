@@ -1,5 +1,7 @@
 #include "stdafx.h"
-
+/*
+http://laurikari.net/tre/
+*/
 ///////////////////////////////////////////////////////////
 static int valid_reobj = 0;
 static regex_t reobj;
@@ -31,6 +33,7 @@ int wrap_regcomp(const CHAR_T *re, int flags)
 	int errcode = 0;
 
 	wrap_regfree();
+	regex_pattern = re;
 	errcode = tre_regcomp(&reobj, re, flags);
 
 	if (errcode != 0)
@@ -50,13 +53,16 @@ void wrap_regmatch(const CHAR_T *fmt, ...)
 	size_t pmatch_len = elementsof(pmatch_global);
 	regmatch_t *pmatch = pmatch_global;
 	unsigned int i;
-	CHAR_T *p;
+	CHAR_T str[128];
 	size_t str_len;
+	CHAR_T *p;
+	int *d;
 
 	va_start(ap, fmt);
 
-	while(*fmt++ == '$') {
-		for (i = 0; i < pmatch_len; i++) {
+	
+	for (i = 1; i < pmatch_len; i++) {
+		if (*fmt++ == '%') {
 			switch(*fmt++) {
 			case 's':
 				p = va_arg(ap, CHAR_T *);
@@ -64,14 +70,12 @@ void wrap_regmatch(const CHAR_T *fmt, ...)
 				strncpy(p, regex_data + pmatch[i].rm_so, str_len);
 				p[str_len] = 0;
 				break;
-			case 'c':
-				va_arg(ap, char);
-				break;
 			case 'd':
-				va_arg(ap, int);
-				break;
-			case 'u':
-				va_arg(ap, unsigned int);
+				d = va_arg(ap, int *);
+				str_len = pmatch[i].rm_eo - pmatch[i].rm_so;
+				strncpy(str, regex_data + pmatch[i].rm_so, str_len);
+				str[str_len] = 0;
+				*d = atoi(str);
 				break;
 			default:
 				goto _end;

@@ -300,7 +300,7 @@ TOP GOVT SECTION (Governments)
 
 TOP RULE SECTION (General Settings)
   4	char		"RULE"
-  4	long		"number of rules" (1)
+  4	long		number of rules (1)
 
   For each rule:
     4	long		length of rule data
@@ -354,7 +354,7 @@ TOP RULE SECTION (General Settings)
     4	long		fortifications defensive bonus
     4	long		number of culture levels
 
-    For each culture level
+    For each culture level:
       64 string		culture level name
 
     4	long		border expansion multiplier
@@ -579,7 +579,7 @@ TOP PRTO SECTION (Units)
     2   short		??? (1)
     4   long		bombard effects
 
-    For each terrain (PTW: 12 C3C: 14)   
+    For each terrain: (PTW: 12 C3C: 14)   
       1 byte		ignore movment cost
     4   long		require support
     4   long		???
@@ -590,7 +590,7 @@ TOP PRTO SECTION (Units)
     4   long		???
     4   long		number of stealth targets
 
-    For each stealth target   
+    For each stealth target:
       4 long		stealth target (PRTO ref)
     4   long		???
     4   long		???
@@ -823,7 +823,7 @@ TOP FLAV SECTION (Flavors)
 
 TOP WCHR SECTION
   4	char		"WCHR"
-  4	long		"number of world characteristics" (1)
+  4	long		number of world characteristics (1)
 
   For each world characteristic:
     4	long		length of WCHR section (52)
@@ -844,28 +844,30 @@ TOP WCHR SECTION
 
 TOP WMAP SECTION
   4	char		"WMAP"
-  4	long		"number of world maps" (1)
-  4	long		length of WMAP section (256)
-  4	long		number of resources
+  4	long		number of world maps (1)
 
-  For each resource:
-    4	long		resource occurence
-
-  4	long		number of continents
-  4	long		height
-  4	long		distance between civs
-  4	long		number of civs
-  4	long		???
-  4	long		??? (0)
-  4	long		width
-  4	long		??? (-1)
-  124 	long		unknown
-  4	long		map seed
-  4	long		flags (binary):
-					00000000
-			x-wrapping	.......1
-			y-wrapping	......1.
-			polar ice caps	.....1..
+  For each world map:
+    4	long		length of WMAP data (256)
+    4	long		number of resources
+  
+    For each resource:
+      4	long		resource occurence
+  
+    4	long		number of continents
+    4	long		height
+    4	long		distance between civs
+    4	long		number of civs
+    4	long		???
+    4	long		??? (0)
+    4	long		width
+    4	long		??? (-1)
+    124 	long		unknown
+    4	long		map seed
+    4	long		flags (binary):
+  					00000000
+  			x-wrapping	.......1
+  			y-wrapping	......1.
+  			polar ice caps	.....1..
   
 
 TOP TILE SECTION
@@ -964,7 +966,7 @@ TOP CITY SECTION
     24	string		city name
     4	long		owner type (0=None, 1=Barbarians, 2=Civ, 3=Player)
     4	long		number of buildings
-    for each building
+    For each building:
       4 long		builning ID
     4	long		culture
     4	long		owner (RACE ID, Player# (0=Player1 and so on) or Barbarian Tribe)
@@ -998,7 +1000,7 @@ TOP CLNY SECTION
   4	char		"CLNY"
   4	long		number of colonies
 
-  For each unit:
+  For each colony:
     4	long		length of colony data (16)
     4	long		owner type (0=None, 1=Barbarians, 2=Civ, 3=Player)
     4	long		owner (RACE ID, Player# (0=Player1 and so on) or Barbarian Tribe)
@@ -1016,7 +1018,7 @@ TOP GAME SECTION
     4	long		default game rules (1=use, 0=don't use)
     4	long 		default victory consitions (1=use, 0=don't use)
     4	long		number of playable civs (0=all playable)
-    for each playable civ
+    For each playable civ:
       4 long		id of playable civ
     4	long		victory conditions and rules set (binarry):
 							00000000
@@ -1053,7 +1055,7 @@ TOP GAME SECTION
     5200	string		scenario search folders
     (4	long		map visible, BIX >= 11.19 ONLY, not BIQ (major=12))
 
-    for each playable civ
+    For each playable civ:
 	   4 long		alliance (0-4, 0 = none)
     4	long		victory point limit
     4	long		city elimination count
@@ -1075,7 +1077,7 @@ TOP GAME SECTION
     256	string		alliance name #3
     256	string		alliance name #4
 
-    For each alliance (0 to 4):
+    For each alliance: (0 to 4)
        4 long		war with alliance #0 ("unallied")
        4 long		war with alliance #1
        4 long		war with alliance #2
@@ -1117,12 +1119,12 @@ TOP LEAD SECTION
     4	long 		???
     4	long 		???
     4	long 		number of different start unit
-    for each type of start units
+    For each type of start units:
       4 long		number of start units of the type
       4 long		type of start unit
     4	long 		gender of leader name
     4	long 		number of starting technologies
-    for each starting technology
+    For each starting technology:
       4 long		technology
     4	long 		difficulty
     4	long 		initial era

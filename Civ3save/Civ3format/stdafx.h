@@ -11,6 +11,7 @@
 //#include "pcre.h"
 #include "tre/regex.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
 
