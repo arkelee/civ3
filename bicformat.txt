@@ -626,8 +626,8 @@ TOP RACE SECTION (Civilizations)
     For each era:
       260 string	forward filename
 
-    For each era:
-      260 string	reverse filename
+//    For each era:
+//      260 string	reverse filename
 
     4	long		culture group
     4	long		leader gender

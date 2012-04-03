@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+#include <ctype.h>
 
 
 #define elementsof(x)	( sizeof(x) / sizeof(x[0]) )

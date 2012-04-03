@@ -28,6 +28,10 @@ typedef enum token_line (parse_line_func_t)();
 #define debug(x)
 #endif
 
+#define output(fmt, ...) fprintf(fp_out, fmt, __VA_ARGS__)
+
+#define MAXLINEBUF 1024
+#define MAXBUF 102400
 ///////////////////////////////////////////////////////////
 extern FILE *fp_src, *fp_out, *fp_log;
 

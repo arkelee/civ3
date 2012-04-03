@@ -2,24 +2,21 @@
 #include "Civ3global.h"
 
 ///////////////////////////////////////////////////////////
-char linebuf[1024];
+char linebuf[MAXLINEBUF];
 long begin_line;
-
-enum errorcode g_errorcode;
-enum token_line looknext;
 
 char section[5];
 
 int	bytes = 0;
-char type[1024];
-char field[1024];
+char type[MAXLINEBUF];
+char field[MAXLINEBUF];
 
-char g_buf[1024];
-char dbg_buf1[1024];
-char dbg_buf2[1024];
-char dbg_buf3[1024];
+char g_buf[MAXLINEBUF];
+char dbg_buf1[MAXLINEBUF];
+char dbg_buf2[MAXLINEBUF];
+char dbg_buf3[MAXLINEBUF];
 
-#define PROFILE
+//#define PROFILE
 #ifdef PROFILE
 #define profile() \
 	do { \
@@ -30,17 +27,10 @@ char dbg_buf3[1024];
 #define profile()
 #endif
 ///////////////////////////////////////////////////////////
-void report_error(enum errorcode code)
-{
-	printf("errorcode = %d\n", (int)code);
-	printf("%s\n", linebuf);
-    g_errorcode = code;
-}
-
 void inline get_line()
 {
 	begin_line = ftell(fp_src);
-	fgets(linebuf, 1023, fp_src);
+	fgets(linebuf, MAXLINEBUF - 1, fp_src);
 }
 void inline retrect_line()
 {
@@ -196,7 +186,7 @@ enum token_line parse_comment()
 	wrap_regcomp("^((//.*|[[:space:]]*)*)\n", REG_EXTENDED);
 	if (REG_OK == wrap_regexec(linebuf, 0)) {
 		wrap_regmatch("%s", g_buf);
-		debug("//%s", g_buf);
+		debug("%s", g_buf);
 		profile();
 		debug("\n");
 		return COMMENT;
@@ -254,102 +244,3 @@ _start:
 	debug("//UNKNOWN:%s\n", linebuf);
 	return (looknext = UNKNOWN_TOKEN);
 }
-
-void match_line(enum token_line t)
-{
-    if (looknext == t)
-        looknext = parse_line();
-    else
-        report_error(SYNTAX);
-}
-
-int parse_item_item_item()
-{
-	match_line(ITEM_ITEM_ITEM_HEADER);
-	match_line(ITEM_ITEM_ITEM_FIELD);
-	while(1) {
-		switch (looknext) {
-		case ITEM_ITEM_ITEM_FIELD:
-			match_line(ITEM_ITEM_ITEM_FIELD);
-			break;
-		default:
-			goto _end;
-		}
-	}
-_end:
-	return 0;
-}
-
-int parse_item_item()
-{
-	match_line(ITEM_ITEM_HEADER);
-	match_line(ITEM_ITEM_FIELD);
-	while(1) {
-		switch (looknext) {
-		case ITEM_ITEM_FIELD:
-			match_line(ITEM_ITEM_FIELD);
-			break;
-		case ITEM_ITEM_ITEM_HEADER:
-			parse_item_item_item();
-		default:
-			goto _end;
-		}
-	}
-_end:
-	return 0;
-}
-
-int parse_item()
-{
-	match_line(ITEM_HEADER);
-	match_line(ITEM_FIELD);
-	while(1) {
-		switch (looknext) {
-		case ITEM_FIELD:
-			match_line(ITEM_FIELD);
-			break;
-		case ITEM_ITEM_HEADER:
-			parse_item_item();
-			break;
-		default:
-			goto _end;
-		}
-	}
-_end:
-	return 0;
-}
-
-int parse_section()
-{
-	match_line(SECTION_HEADER);
-	match_line(SECTION_NAME);
-	match_line(SECTION_NUMBER);
-
-	parse_item();
-
-	return 0;
-}
-
-
-int parse_file()
-{
-
-	while (!feof(fp_src)) {
-
-		parse_line();
-		switch (looknext) {
-		case SECTION_HEADER:
-			parse_section();
-			break;
-//		default:
-//			parse_line();
-		}
-
-
-
-//		fputs(linebuf, fp_out);
-	}
-	return 0;
-}
-
-///////////////////////////////////////////////////////////
