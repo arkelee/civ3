@@ -174,19 +174,19 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\Civ3constructor.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Civ3format.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\Civ3lexer.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Civ3parser.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Civ3parserline.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Civ3wrapregex.cpp"
 				>
 			</File>
 			<File
