@@ -53,12 +53,42 @@ int load_section()
 		fread(&number2, sizeof(long), 1, fp_src);
 		offset = number2 * 0x124;
 //	} else if (!strcmp(g_tag, "GAME")) {
+	} else if (!strcmp(g_tag, "CONT")) {
+		do {
+			fseek(fp_src, 12, 1);
+			fread(g_tag, 1, 4, fp_src);
+			g_tag[4] = 0;
+		} while (!strcmp(g_tag, "CONT"));
+		fseek(fp_src, 25 * 4, 1);
+		return 0;
 	} else if (!strcmp(g_tag, "WRLD")) {
-		fseek(fp_src, 0x91a15, 0);
+		long width, height, tile;
+
+		fread(&number, sizeof(long), 1, fp_src);
+		fread(&number2, sizeof(short), 1, fp_src);
+
+		fread(g_tag, 1, 4, fp_src);
+		fread(&length, sizeof(long), 1, fp_src);
+		fseek(fp_src, sizeof(long), 1);
+		fread(&height, sizeof(long), 1, fp_src);
+		fseek(fp_src, 4 * sizeof(long), 1);
+		fread(&width, sizeof(long), 1, fp_src);
+		fseek(fp_src, (-7) * (long)sizeof(long), 1);
+
+		fseek(fp_src, length, 1);
+		
+		fread(g_tag, 1, 4, fp_src);
+		fread(&length, sizeof(long), 1, fp_src);
+		fseek(fp_src, length, 1);
+
+		tile = (width / 2 ) * height;
+		fseek(fp_src, tile * 0xd4, 1);
+//		for (tile = 0; tile < (width / 2 ) * height; tile++) {
+//		}
 		return 0;
 	} else if (!strcmp(g_tag, "LEAD")) {
-		fseek(fp_src, 0x91a15, 0);
-		return 0;
+		fseek(fp_src, 0, 2);
+		return -1;
 	} else {
 		long i;
 		fread(&number, sizeof(long), 1, fp_src);
@@ -95,7 +125,8 @@ int load_file()
 		printf("this version is not support.\n");
 
 	while (!feof(fp_src)) {
-		load_section();
+		if (load_section())
+			break;
 	}
 
 	free(g_buf);
